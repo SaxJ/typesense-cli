@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Cli.Handlers
 {
-    class Collections
+    class CollectionHandlers
     {
         private readonly ITypesenseClient TypesenseClient;
 
-        public Collections(ITypesenseClient client)
+        public CollectionHandlers(ITypesenseClient client)
         {
             TypesenseClient = client;
         }
@@ -39,6 +39,13 @@ namespace Cli.Handlers
             {
                 Console.WriteLine("File does not exist");
             }
+        }
+
+        public async Task RetrieveCollection(string name)
+        {
+            var collection = await TypesenseClient.RetrieveCollection(name);
+
+            Console.WriteLine(JsonSerializer.Serialize(collection));
         }
     }
 }

@@ -41,13 +41,20 @@ namespace Cli
 
         private static void CollectionCommands(IServiceProvider serviceProvider, RootCommand rootCommand)
         {
+            var collectionHandlers = serviceProvider.GetService<CollectionHandlers>();
+
             var collectionCmd = new Command("collection");
             collectionCmd.Description = "Perform operations on collections";
 
             var createCmd = new Command("create");
             collectionCmd.Add(createCmd);
             createCmd.Add(new Argument<FileInfo>("schemaFile", "Schema definition JSON file"));
-            createCmd.Handler = CommandHandler.Create<FileInfo>(serviceProvider.GetService<Collections>().CreateCollection);
+            createCmd.Handler = CommandHandler.Create<FileInfo>(collectionHandlers.CreateCollection);
+
+            var detailsCmd = new Command("details");
+            collectionCmd.Add(detailsCmd);
+            detailsCmd.Add(new Argument<string>("collectionName", "The name of the collection to retreive"));
+            detailsCmd.Handler = CommandHandler.Create<string>(collectionHandlers.RetrieveCollection);
 
             rootCommand.Add(collectionCmd);
         }
