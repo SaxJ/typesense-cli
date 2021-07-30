@@ -47,5 +47,29 @@ namespace Cli.Handlers
 
             Console.WriteLine(JsonSerializer.Serialize(collection));
         }
+
+        public async Task ListCollections()
+        {
+            var collections = await TypesenseClient.RetrieveCollections();
+
+            foreach (var collection in collections)
+            {
+                Console.WriteLine(collection.Name);
+            }
+        }
+
+        public async Task DeleteCollection(string name)
+        {
+            try
+            {
+                var result = await TypesenseClient.DeleteCollection(name);
+                Console.WriteLine($"Collection {result.Name} deleted");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
     }
 }

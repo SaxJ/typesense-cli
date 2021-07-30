@@ -56,6 +56,15 @@ namespace Cli
             detailsCmd.Add(new Argument<string>("collectionName", "The name of the collection to retreive"));
             detailsCmd.Handler = CommandHandler.Create<string>(collectionHandlers.RetrieveCollection);
 
+            var listCmd = new Command("list");
+            collectionCmd.Add(listCmd);
+            listCmd.Handler = CommandHandler.Create(collectionHandlers.ListCollections);
+
+            var deleteCmd = new Command("drop");
+            collectionCmd.Add(deleteCmd);
+            deleteCmd.Add(new Argument<string>("collectionName", "The name of the collection to drop"));
+            deleteCmd.Handler = CommandHandler.Create<string>(collectionHandlers.DeleteCollection);
+
             rootCommand.Add(collectionCmd);
         }
     }
