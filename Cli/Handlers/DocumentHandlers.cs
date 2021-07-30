@@ -3,6 +3,7 @@ using System.IO;
 using Typesense;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cli.Handlers
 {
@@ -52,6 +53,38 @@ namespace Cli.Handlers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async Task ImportDocuments<T>(string collection, FileInfo jsonlFile, int batchSize = 40)
+        {
+            if (jsonlFile.Exists)
+            {
+                try
+                {
+                    var lines = File.ReadLines(jsonlFile.FullName);
+
+                    List<Task> tasks = new List<Task>();
+                    List<T> docs = new List<T>();
+                    foreach (var line in lines)
+                    {
+                        T doc = JsonSerializer.Deserialize<T>(line);
+                        docs.Add(doc);
+
+                        if (docs.Count >= batchSize)
+                        {
+                            tasks.Add(TypesenseClient.ImportDocuments<T>(collection, docs, batchSize));
+                            docs = new List<T>();
+                        }
+                    }
+
+                    await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
             }
         }
     }
