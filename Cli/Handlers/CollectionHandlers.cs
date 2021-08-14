@@ -43,9 +43,14 @@ namespace Cli.Handlers
 
         public async Task RetrieveCollection(string name)
         {
+            Console.WriteLine($"Fetching collection {name}");
+
             var collection = await TypesenseClient.RetrieveCollection(name);
 
-            Console.WriteLine(JsonSerializer.Serialize(collection));
+            Console.WriteLine(JsonSerializer.Serialize(collection, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
         }
 
         public async Task ListCollections()

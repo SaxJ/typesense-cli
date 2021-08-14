@@ -16,7 +16,7 @@ namespace Cli
         {
             var serviceProvider = new ServiceCollection()
                 .AddTypesenseClient(ClientConfig)
-                .AddSingleton<Collections>()
+                .AddSingleton<CollectionHandlers>()
                 .BuildServiceProvider();
 
             var rootCmd = new RootCommand("Interact with a Typesense server");
@@ -53,7 +53,7 @@ namespace Cli
 
             var detailsCmd = new Command("details");
             collectionCmd.Add(detailsCmd);
-            detailsCmd.Add(new Argument<string>("collectionName", "The name of the collection to retreive"));
+            detailsCmd.Add(new Argument<string>("name", "The name of the collection to retreive"));
             detailsCmd.Handler = CommandHandler.Create<string>(collectionHandlers.RetrieveCollection);
 
             var listCmd = new Command("list");
@@ -62,7 +62,7 @@ namespace Cli
 
             var deleteCmd = new Command("drop");
             collectionCmd.Add(deleteCmd);
-            deleteCmd.Add(new Argument<string>("collectionName", "The name of the collection to drop"));
+            deleteCmd.Add(new Argument<string>("name", "The name of the collection to drop"));
             deleteCmd.Handler = CommandHandler.Create<string>(collectionHandlers.DeleteCollection);
 
             rootCommand.Add(collectionCmd);
