@@ -16,7 +16,7 @@ namespace Cli.Handlers
             TypesenseClient = client;
         }
 
-        public async Task UpsertDocument<T>(string collection, FileInfo document)
+        public async Task UpsertDocument<T>(string collection, FileInfo document) where T : class
         {
             if (document.Exists)
             {
@@ -41,7 +41,7 @@ namespace Cli.Handlers
             }
         }
 
-        public async Task GetDocument<T>(string collection, string id)
+        public async Task GetDocument<T>(string collection, string id) where T : class
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Cli.Handlers
             }
         }
 
-        public async Task ImportDocuments<T>(string collection, FileInfo jsonlFile, int batchSize = 40)
+        public async Task ImportDocuments<T>(string collection, FileInfo jsonlFile, int batchSize = 40) where T : class
         {
             if (jsonlFile.Exists)
             {

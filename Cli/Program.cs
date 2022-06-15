@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading.Tasks;
 using Cli.Handlers;
@@ -31,11 +30,11 @@ namespace Cli
             config.Nodes = new List<Node>
                     {
                         new Node
-                        {
-                            Host = Environment.GetEnvironmentVariable("TYPESENSE_HOST") ?? "localhost",
-                            Port = Environment.GetEnvironmentVariable("TYPESENSE_PORT") ?? "8103",
-                            Protocol = Environment.GetEnvironmentVariable("TYPESENSE_PROTOCOL") ?? "http",
-                        }
+                        (
+                            Environment.GetEnvironmentVariable("TYPESENSE_HOST") ?? "localhost",
+                            Environment.GetEnvironmentVariable("TYPESENSE_PORT") ?? "443",
+                            Environment.GetEnvironmentVariable("TYPESENSE_PROTOCOL") ?? "https"
+                        )
                     };
         }
 
@@ -48,22 +47,25 @@ namespace Cli
 
             var createCmd = new Command("create");
             collectionCmd.Add(createCmd);
-            createCmd.Add(new Argument<FileInfo>("schemaFile", "Schema definition JSON file"));
-            createCmd.Handler = CommandHandler.Create<FileInfo>(collectionHandlers.CreateCollection);
+            var schemaArg = new Argument<FileInfo>("schemaFile", "Schema definition JSON file");
+            createCmd.Add(schemaArg);
+            createCmd.SetHandler(collectionHandlers.CreateCollection, schemaArg);
 
             var detailsCmd = new Command("details");
             collectionCmd.Add(detailsCmd);
-            detailsCmd.Add(new Argument<string>("name", "The name of the collection to retreive"));
-            detailsCmd.Handler = CommandHandler.Create<string>(collectionHandlers.RetrieveCollection);
+            var nameArg = new Argument<string>("name", "The name of the collection to retreive");
+            detailsCmd.Add(nameArg);
+            detailsCmd.SetHandler(collectionHandlers.RetrieveCollection, nameArg);
 
             var listCmd = new Command("list");
             collectionCmd.Add(listCmd);
-            listCmd.Handler = CommandHandler.Create(collectionHandlers.ListCollections);
+            listCmd.SetHandler(collectionHandlers.ListCollections);
 
             var deleteCmd = new Command("drop");
             collectionCmd.Add(deleteCmd);
-            deleteCmd.Add(new Argument<string>("name", "The name of the collection to drop"));
-            deleteCmd.Handler = CommandHandler.Create<string>(collectionHandlers.DeleteCollection);
+            var dropArg = new Argument<string>("name", "The name of the collection to drop");
+            deleteCmd.Add(dropArg);
+            deleteCmd.SetHandler(collectionHandlers.DeleteCollection, dropArg);
 
             rootCommand.Add(collectionCmd);
         }

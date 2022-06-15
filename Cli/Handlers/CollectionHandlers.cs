@@ -76,5 +76,27 @@ namespace Cli.Handlers
 
             }
         }
+
+        public async Task UpdateCollection(FileInfo schemaUpdateFile)
+        {
+            if (schemaUpdateFile.Exists)
+            {
+                try
+                {
+                    using (var reader = new StreamReader(schemaUpdateFile.OpenRead()))
+                    {
+                        var updateContents = await reader.ReadToEndAsync();
+                    }
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Schema update file does not exist");
+            }
+        }
     }
 }
